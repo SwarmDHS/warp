@@ -1,0 +1,37 @@
+FROM https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-05-28/2021-05-07-raspios-buster-armhf-lite.zip
+
+DEPLOY_DIR=deploy
+
+VERSION=unstable
+
+if [[ -v GH_ACTION ]]; then
+    VERSION=stable
+fi
+
+TO ${DEPLOY_DIR}/warp-${VERSION}-`date +"%Y-%m-%d::%s"`.img
+
+# Increase the image by 300 MB
+PUMP 300M
+
+# Enable serial console using built-in configuration tool
+RUN raspi-config nonint do_serial 0
+
+# Upgrade the operating system image
+RUN apt-get update
+RUN bash -c 'DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade'
+
+INSTALL "core" "/usr/core"
+
+# Enable SSH
+source modules/ssh.sh
+
+# Setup WiFi
+source modules/wifi.sh
+
+# Setup locale
+source modules/locale.sh
+
+# Setup bootstrap core
+source modules/core.sh
+
+RUN echo "Done"
