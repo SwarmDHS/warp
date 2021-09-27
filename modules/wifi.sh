@@ -5,9 +5,9 @@ WPA_CONFIG=/boot/wpa_supplicant.conf
 
 BOOTSTRAP_WPA_COUNTRY=US
 
-if [[ ! -v BOOTSTRAP_WPA_SSID || ! -v BOOTSTRAP_WPA_PASSPHRASE ]]; then
+if [[ -z "${BOOTSTRAP_WPA_SSID}" || -z "${BOOTSTRAP_WPA_PASSPHRASE}" ]]; then
     printf "\n\nWARNING: WPA environment variables not set, failed to generate ${WPA_CONFIG}.\n"
-    echo "To fix this, you can do:"
+    echo "To fix this, you create a file called \"credentials\" and insert:"
     echo "  BOOTSTRAP_WPA_SSID=your_wifi_ssid"
     echo "  BOOTSTRAP_WPA_PASSPHRASE=your_wifi_passphrase"
     echo "Aborting."
@@ -15,7 +15,7 @@ if [[ ! -v BOOTSTRAP_WPA_SSID || ! -v BOOTSTRAP_WPA_PASSPHRASE ]]; then
 fi
 
 echo "Generating ${WPA_CONFIG}..."
-    
+
 # Redirect output to prevent echoing sensitive information to stdout
 RUN << EOF &> /dev/null
 # Generate wpa_supplicant.conf in /boot so pi will copy it and disable rfkill on startup

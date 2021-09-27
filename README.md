@@ -35,11 +35,17 @@ The warped image file can be built inside of a docker container, and in fact it'
 To build:
 
 1. Make sure [Docker](https://www.docker.com/get-started) is installed
-2. Set the `BOOTSTRAP_WPA_SSID`, `BOOTSTRAP_WPA_PASSPHRASE`, and `BOOTSTRAP_WPA_COUNTRY` environment variables so your Pi can connect to your network
+2. In the root directory, create a file called `credentials`. Insert the following into it:
+    ```
+    BOOTSTRAP_WPA_SSID=your_wifi_name
+    BOOTSTRAP_WPA_PASSPHRASE=your_wifi_password
+    ```
     - The wifi credentials are currently hardcoded into Warp
     - No setup tools have been created yet, but will be soon
 3. Run `./build.sh` to create an image and to run the build in a container
     - Note that the container will be automatically deleted, but previous images will be preserved
+
+**Note:** If building without docker, create environment variables instead of that credentials file.
 
 If you would like to inspect the container in case it fails or if you want to poke around, you may build with:
 

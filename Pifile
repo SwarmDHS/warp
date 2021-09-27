@@ -17,8 +17,16 @@ PUMP 300M
 RUN raspi-config nonint do_serial 0
 
 # Upgrade the operating system image
-RUN apt-get update
+RUN apt update && apt upgrade
 RUN bash -c 'DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade'
+
+# Install dependencies
+RUN DEBIAN_FRONTEND=noninteractive apt install -y \
+    hostapd \
+    dnsmasq \
+    netfilter-persistent \
+    iptables-persistent \
+    bridge-utils
 
 INSTALL "core" "/usr/core"
 

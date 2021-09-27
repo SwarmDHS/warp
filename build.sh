@@ -6,6 +6,7 @@ CONTAINER_NAME=${CONTAINER_NAME:-warp_build}
 IMAGE_NAME=${IMAGE_NAME:-pimod_warp}
 
 PRESERVE_CONTAINER=${PRESERVE_CONTAINER:-0}
+CONTINUE=${CONTINUE:-0}
 CLEAN=${CLEAN:-0}
 
 CONTAINER_EXISTS=$(${DOCKER} ps -a --filter name="${CONTAINER_NAME}" -q)
@@ -16,8 +17,8 @@ if [ "${CONTAINER_RUNNING}" != "" ]; then
 	exit 1
 fi
 
-if [ "${CONTAINER_EXISTS}" != "" ] && [ "${CLEAN}" != "1" ]; then
-	echo "Container ${CONTAINER_NAME} already exists and you did not specify CLEAN=1. Aborting."
+if [ "${CONTAINER_EXISTS}" != "" ] && [ "${CONTINUE}" != "1" ]; then
+	echo "Container ${CONTAINER_NAME} already exists and you did not specify CONTINUE=1. Aborting."
 	echo "You can delete the existing container like this:"
 	echo "  ${DOCKER} rm -v ${CONTAINER_NAME}"
     echo "Or you can run a clean build like this:"
@@ -33,8 +34,14 @@ fi
 
 mkdir -p ${DEPLOY_DIR}
 
+source credentials
+
 # Build the container
-docker build -t ${IMAGE_NAME} .
+docker build \
+    -t ${IMAGE_NAME} \
+    --build-arg SSID=${BOOTSTRAP_WPA_SSID} \
+    --build-arg PASS=${BOOTSTRAP_WPA_PASSPHRASE} \
+    .
 
 # Run the container
 docker run --name ${CONTAINER_NAME} --privileged -v $PWD:/build ${IMAGE_NAME}
