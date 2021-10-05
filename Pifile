@@ -17,29 +17,43 @@ PUMP 300M
 RUN raspi-config nonint do_serial 0
 
 # Upgrade the operating system image
-RUN apt update && apt upgrade
-RUN bash -c 'DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade'
+RUN apt-get update
+RUN apt-get -y dist-upgrade
+
+RUN <<EOF
+echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
+EOF
 
 # Install dependencies
-RUN DEBIAN_FRONTEND=noninteractive apt install -y \
+RUN apt install -y \
     hostapd \
     dnsmasq \
     netfilter-persistent \
     iptables-persistent \
-    bridge-utils
+    bridge-utils \
+    openjdk-11-jre-headless
 
 INSTALL "core" "/usr/core"
 
-# Enable SSH
+printf "Enabling SSH... "
 source modules/ssh.sh
+echo "Done."
 
-# Setup WiFi
+printf "Setting up WiFi... "
 source modules/wifi.sh
+echo "Done"
 
-# Setup locale
+printf "Setting locale, keyboard, and timezone... "
 source modules/locale.sh
+echo "Done"
 
-# Setup bootstrap core
+printf "Setting up bootstrap core..."
 source modules/core.sh
+echo "Done."
+
+printf "Setting up the access point... "
+source modules/accesspt.sh
+echo "Done."
 
 RUN echo "Done"

@@ -30,7 +30,7 @@ Go to <a href="#2">Step 2</a> to start playing around with Warp
 
 ### 1.2 Building From Source
 
-The warped image file can be built inside of a docker container, and in fact it's recommended to do so. This allows images to be built in a clean environment every time, making it easier to reproduce any errors that may show up later.
+The warped image file can be built inside of a docker container, and in fact it's recommended to do so. This allows images to be built in a clean environment every time, making it easier to reproduce any errors that may show up later. This also means that your builds are machine agnostic, allowing you to tweak whether you're on Linux, MacOS, or Windows.
 
 To build:
 
@@ -40,6 +40,9 @@ To build:
     BOOTSTRAP_WPA_SSID=your_wifi_name
     BOOTSTRAP_WPA_PASSPHRASE=your_wifi_password
     ```
+    - Note that even though the credentials file is ignored by git, you don't *have* to use it
+        - Simply creating those environment variables will work fine, but the file is recommended
+        for your convenience
     - The wifi credentials are currently hardcoded into Warp
     - No setup tools have been created yet, but will be soon
 3. Run `./build.sh` to create an image and to run the build in a container
