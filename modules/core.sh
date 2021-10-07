@@ -1,2 +1,2 @@
 # Copy core software and services
-RUN cp /usr/core/startup/bootstrap.service /lib/systemd/system
+RUN cp /usr/core/bootstrapd/bootstrapd.service /lib/systemd/system

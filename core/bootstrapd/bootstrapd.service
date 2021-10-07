@@ -3,9 +3,10 @@ Description=Handle RPi initialization and configuration
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /usr/core/startup/bootstrap.py
+ExecStart=/usr/bin/python3 /usr/core/bootstrapd/bootstrapd.py
 Restart=on-failure
-User=pi
+User=root
+Group=root
 
 [Install]
 WantedBy=multi-user.target
