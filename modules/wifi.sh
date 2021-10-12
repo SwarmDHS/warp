@@ -1,5 +1,4 @@
-# Install dependencies
-RUN apt-get install -y wpasupplicant
+RUN echo "Enabling WiFi..."
 
 WPA_CONFIG=/boot/wpa_supplicant.conf
 
@@ -14,7 +13,7 @@ if [[ -z "${BOOTSTRAP_WPA_SSID}" || -z "${BOOTSTRAP_WPA_PASSPHRASE}" ]]; then
     exit 1
 fi
 
-echo "Generating ${WPA_CONFIG}..."
+RUN echo "Generating ${WPA_CONFIG}..."
 
 mkdir -p deploy/helpers/boot
 mkdir -p deploy/helpers/var
@@ -25,4 +24,4 @@ RUN echo update_config=1 >> deploy/helpers/boot/wpa_supplicant.conf
 RUN echo country=${BOOTSTRAP_WPA_COUNTRY} >> deploy/helpers/boot/wpa_supplicant.conf
 RUN echo wpa_passphrase ${BOOTSTRAP_WPA_SSID} ${BOOTSTRAP_WPA_PASSPHRASE} >> deploy/helpers/boot/wpa_supplicant.conf
 
-echo "Done."
+RUN echo "Finished enabling WiFi"

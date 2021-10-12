@@ -17,45 +17,34 @@ PUMP 300M
 RUN raspi-config nonint do_serial 0
 
 # Upgrade the operating system image
-RUN apt-get update
+RUN apt-get -y update && apt-get -y upgrade
 RUN apt-get -y dist-upgrade
 
 # Take iptables install out of interactive mode
-RUN echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
-RUN echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
+# RUN echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
+# RUN echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
 
-# Install dependencies
-RUN apt install -y \
-    hostapd \
+RUN /bin/bash -c "export DEBIAN_FRONTEND=noninteractive && apt install -yq hostapd \
     dnsmasq \
+    wpasupplicant \
     netfilter-persistent \
     iptables-persistent \
     bridge-utils \
     openjdk-11-jre-headless \
-    python3-pip
+    python3-pip"
 
 RUN pip3 install flask
 
 INSTALL "core" "/usr/core"
 
-RUN printf "Enabling SSH... "
-RUN source modules/ssh.sh
-RUN echo "Done."
+source modules/ssh.sh
 
-RUN printf "Setting up WiFi... "
-RUN source modules/wifi.sh
-RUN echo "Done"
+source modules/wifi.sh
 
-RUN printf "Setting locale, keyboard, and timezone... "
-RUN source modules/locale.sh
-RUN echo "Done"
+source modules/locale.sh
 
-RUN printf "Setting up bootstrap core... "
-RUN source modules/core.sh
-RUN echo "Done"
+source modules/core.sh
 
-RUN printf "Setting up the access point... "
-RUN source modules/accesspt.sh
-RUN echo "Done"
+source modules/accesspt.sh
 
-RUN echo "Done"
+echo "Done running modules"

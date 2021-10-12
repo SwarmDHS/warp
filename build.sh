@@ -71,4 +71,4 @@ if [[ "${PRESERVE_CONTAINER}" == "0" ]]; then
     ${DOCKER} rm -v "${CONTAINER_NAME}"
 fi
 
-printf "\n\nDone!\n"
+printf "\n\nDone! If nothing went wrong, your image should be ready\n"
