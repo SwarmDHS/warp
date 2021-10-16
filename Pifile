@@ -17,12 +17,9 @@ PUMP 300M
 RUN raspi-config nonint do_serial 0
 
 # Upgrade the operating system image
-RUN apt-get -y update && apt-get -y upgrade
+RUN apt-get -y update
+RUN apt-get -y upgrade
 RUN apt-get -y dist-upgrade
-
-# Take iptables install out of interactive mode
-# RUN echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
-# RUN echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
 
 RUN /bin/bash -c "export DEBIAN_FRONTEND=noninteractive && apt install -yq hostapd \
     dnsmasq \
@@ -44,7 +41,5 @@ source modules/wifi.sh
 source modules/locale.sh
 
 source modules/core.sh
-
-source modules/accesspt.sh
 
 echo "Done running modules"

@@ -1,9 +1,10 @@
-RUN echo "Enabling WiFi..."
+HOST echo "Enabling WiFi..."
 
 WPA_CONFIG=/boot/wpa_supplicant.conf
 
 BOOTSTRAP_WPA_COUNTRY=US
 
+HOST <<EOF
 if [[ -z "${BOOTSTRAP_WPA_SSID}" || -z "${BOOTSTRAP_WPA_PASSPHRASE}" ]]; then
     printf "\n\nWARNING: WPA environment variables not set, failed to generate ${WPA_CONFIG}.\n"
     echo "To fix this, you create a file called \"credentials\" and insert:"
@@ -12,16 +13,28 @@ if [[ -z "${BOOTSTRAP_WPA_SSID}" || -z "${BOOTSTRAP_WPA_PASSPHRASE}" ]]; then
     echo "Aborting."
     exit 1
 fi
+EOF
 
-RUN echo "Generating ${WPA_CONFIG}..."
+HOST echo "Generating ${WPA_CONFIG}..."
 
-mkdir -p deploy/helpers/boot
-mkdir -p deploy/helpers/var
+# HOST mkdir -p deploy/helpers/boot
+# HOST mkdir -p deploy/helpers/var
 
+# HOST tee deploy/helpers/boot/wpa_supplicant.conf <<EOF
+# network={
+#     ssid=${BOOTSTRAP_WPA_SSID}
+#     scan_ssid=1
+#     key_mgmt=WPA-PSK
+#     psk=${BOOTSTRAP_WPA_PASSPHRASE}
+# }
+# EOF
+
+RUN <<EOF
 # Generate wpa_supplicant.conf in /boot so pi will copy it and disable rfkill on startup
-RUN echo ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev > deploy/helpers/boot/wpa_supplicant.conf
-RUN echo update_config=1 >> deploy/helpers/boot/wpa_supplicant.conf
-RUN echo country=${BOOTSTRAP_WPA_COUNTRY} >> deploy/helpers/boot/wpa_supplicant.conf
-RUN echo wpa_passphrase ${BOOTSTRAP_WPA_SSID} ${BOOTSTRAP_WPA_PASSPHRASE} >> deploy/helpers/boot/wpa_supplicant.conf
+echo ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev > /boot/wpa_supplicant.conf
+echo update_config=1 >> /boot/wpa_supplicant.conf
+echo country=${BOOTSTRAP_WPA_COUNTRY} >> /boot/wpa_supplicant.conf
+wpa_passphrase ${BOOTSTRAP_WPA_SSID} ${BOOTSTRAP_WPA_PASSPHRASE} >> /boot/wpa_supplicant.conf
+EOF
 
-RUN echo "Finished enabling WiFi"
+HOST echo "Finished enabling WiFi"

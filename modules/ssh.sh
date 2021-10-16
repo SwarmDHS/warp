@@ -1,5 +1,5 @@
-RUN echo "Enabling SSH..."
+HOST echo "Enabling SSH..."
 
 RUN touch /boot/ssh
 
-RUN echo "Finished enabling SSH"
+HOST echo "Finished enabling SSH"

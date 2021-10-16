@@ -1,5 +1,6 @@
 build
 credentials
+deploy
 
 .vscode
 .DS_Store
