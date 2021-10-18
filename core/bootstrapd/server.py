@@ -7,4 +7,4 @@ def render():
     return flask.render_template("index.html")
 
 def start():
-    app.run(host="localhost", port=3134)
+    app.run(port=8000)
