@@ -36,32 +36,24 @@ fi
 mkdir -p ${BUILD_DIR}
 mkdir -p ${DEPLOY_DIR}
 
-source credentials
-
 # Build the container
 docker build -t ${IMAGE_NAME} .
 
 if [ "${CONTAINER_EXISTS}" != "" ]; then
     trap 'echo "got CTRL+C... please wait 5s" && ${DOCKER} stop -t 5 ${CONTAINER_NAME}_cont' SIGINT SIGTERM
-    ${DOCKER} run \
+    time ${DOCKER} run \
         --rm \
         --name "${CONTAINER_NAME}_cont" \
         --volumes-from="${CONTAINER_NAME}" \
-        --env "BOOTSTRAP_WPA_SSID=$BOOTSTRAP_WPA_SSID" \
-        --env "BOOTSTRAP_WPA_PASSPHRASE=$BOOTSTRAP_WPA_PASSPHRASE" \
         --privileged \
         -v $PWD:/build \
         ${IMAGE_NAME}
-    wait "$!"
 else
     trap 'echo "got CTRL+C... please wait 5s" && ${DOCKER} stop -t 5 ${CONTAINER_NAME}_cont' SIGINT SIGTERM
-    ${DOCKER} run \
+    time ${DOCKER} run \
         --name ${CONTAINER_NAME} \
-        --env "BOOTSTRAP_WPA_SSID=$BOOTSTRAP_WPA_SSID" \
-        --env "BOOTSTRAP_WPA_PASSPHRASE=$BOOTSTRAP_WPA_PASSPHRASE" \
         --privileged \
         -v $PWD:/build ${IMAGE_NAME}
-    wait "$!"
 fi
 
 # Run the container

@@ -1,7 +1,7 @@
 echo "Configuring access point..."
 
-sudo systemctl unmask hostapd
-sudo systemctl enable hostapd
+systemctl unmask hostapd
+systemctl enable hostapd
 
 tee /etc/dhcpcd.conf <<EOF
 interface wlan0
@@ -47,6 +47,13 @@ tee /etc/default/hostapd <<EOF
 DAEMON_CONF="/etc/hostapd/hostapd.conf"
 EOF
 
-sudo netfilter-persistent save
+tee /etc/wpa_supplicantwpa_supplicant-wlan0.conf <<EOF
+ctrl_interface=/run/wpa_supplicant
+update_config=1
+EOF
+
+netfilter-persistent save
 
 echo "Finished configuring access point, rebooting"
+
+reboot

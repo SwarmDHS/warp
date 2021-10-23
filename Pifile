@@ -8,7 +8,7 @@ if [[ -v GH_ACTION ]]; then
     VERSION=stable
 fi
 
-TO ${DEPLOY_DIR}/warp-${VERSION}-`date +"%Y-%m-%d::%s"`.img
+TO ${DEPLOY_DIR}/warp-${VERSION}-`date +"%Y-%m-%d-%s"`.img
 
 # Increase the image by 300 MB
 PUMP 300M
@@ -21,22 +21,21 @@ RUN apt-get -y update
 RUN apt-get -y upgrade
 RUN apt-get -y dist-upgrade
 
-RUN /bin/bash -c "export DEBIAN_FRONTEND=noninteractive && apt install -yq hostapd \
+RUN /bin/bash -c "export DEBIAN_FRONTEND=noninteractive && apt install -yq \
+    hostapd \
     dnsmasq \
     wpasupplicant \
     netfilter-persistent \
     iptables-persistent \
     bridge-utils \
     openjdk-11-jre-headless \
-    python3-pip"
-
-RUN pip3 install flask
+    python3-pip \
+    python3-flask \
+    vim"
 
 INSTALL "core" "/usr/core"
 
 source modules/ssh.sh
-
-source modules/wifi.sh
 
 source modules/locale.sh
 

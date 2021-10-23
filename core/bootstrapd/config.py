@@ -1,15 +1,17 @@
-import os
+import os, json
 
+FIRST_START: str = "/etc/bootstrapd/start"
 BOOTSTRAPD_CONFIG: str = "/etc/bootstrapd/bootstrapd.conf"
+NETWORK_CONFIG: str = "/etc/bootstrapd/network.conf"
 
-config_file = open(BOOTSTRAPD_CONFIG)
+config_file = open(BOOTSTRAPD_CONFIG, "w+")
+network_config = open(NETWORK_CONFIG, "w+")
 
 EXT_CONFIG_FILES: list = [
     "/etc/dhcpcd.conf",
     "/etc/sysctl.d/routed-ap.conf",
     "/etc/sysctl.conf",
     "/etc/dnsmasq.conf",
-    "/etc/hostapd/hostapd.conf",
     "/etc/hostapd/hostapd.conf",
     "/etc/default/hostapd",
 ]
@@ -30,22 +32,24 @@ def parse() -> dict:
             config[key] = value
         
     return config
-    
-def write(key: str, value: str) -> bool:
-    pass
 
-configs_active: bool = True
-
-def get_config_status() -> bool:
-    return configs_active
+def is_config_active() -> bool:
+    return not os.path.isfile(EXT_CONFIG_FILES[0] + ".orig")
 
 def config_toggle() -> bool:
+    configs_active: bool = is_config_active()
+    
     for path in EXT_CONFIG_FILES:
         src: str = path
         dest: str = path + ".orig"
         
         if not configs_active:
             src = path + ".orig"
-            src = path
+            dest = path
             
-        os.system(f"sudo mv {src} {dest}")
+        status: int = os.system(f"sudo mv {src} {dest}")
+        
+        if status > 0:
+            return False
+        
+    return True

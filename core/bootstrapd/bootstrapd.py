@@ -1,17 +1,19 @@
 import os
 import config, server
 
-FIRST_START: str = "/etc/bootstrapd/start"
-ACCESS_POINT_CONF: str = "/usr/core/bootstrapd/ap_conf.sh"
-settings: dict = config.parse()
+ACCESS_POINT_CONF: str = "ap_conf.sh"
+# settings: dict = config.parse()
 
-if not os.path.isfile(FIRST_START):
+# Check if this is the first time the system's booted
+if not os.path.isfile(config.FIRST_START):
     # Create the file, the system is no longer fresh
-    open(FIRST_START, "w").close()
+    open(config.FIRST_START, "w").close()
     
     # Run the access point startup script, create files and save
     # network preferences
-    os.system(f"chmod +x {ACCESS_POINT_CONF} && sh {ACCESS_POINT_CONF}")
+    os.system(f"chmod +x {ACCESS_POINT_CONF} && sudo sh {ACCESS_POINT_CONF}")
 
-# Start the flask server
-server.start()
+# We don't want to keep the server unnecessarily running
+# Only start if in access point mode
+if config.is_config_active():
+    server.start()
