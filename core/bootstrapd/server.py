@@ -1,4 +1,4 @@
-import json
+import json, re
 import flask
 import command, network
 
@@ -35,7 +35,7 @@ def time():
     
 @app.route("/uptime")
 def uptime():
-    return json.dumps({"uptime": " ".join(command.run("uptime").split(",")[0].split(" ")[2::])})
+    return json.dumps({"uptime": re.findall(command.run("uptime"), r"[^\n]{2}")})
 
 @app.route("/hostname")
 def hostname():
