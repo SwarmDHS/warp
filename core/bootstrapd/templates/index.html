@@ -2,10 +2,117 @@
 <html>
     <head>
         <title>Raspi Setup</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+        <script src="https://kit.fontawesome.com/6832ef0fd0.js" crossorigin="anonymous"></script>
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
 
     <body>
-        <h1>Raspi Setup</h1>
-        <h3>WiFi Select</h3>
+        <div class="container is-fluid mt-4 mb-4">
+            <nav class="level">
+                <div class="level-left">
+                    <h1 class="title is-1 is-spaced">Raspi Setup</h1>
+                </div>
+                
+                <div class="level-item level-right">
+                    <button class="button is-light is-primary">
+                        <span>Sync</span>
+                        <span class="icon is-small">
+                            <i class="fas fa-sync"></i>
+                        </span>
+                    </button>  
+                </div>
+            </nav>
+            
+            
+            <div class="tile is-ancestor">
+                <div class="tile is-4 is-vertical is-parent">
+                    <div class="tile is-child box">
+                        <p class="title">Hostname</p>
+                        <p id="hostname"><!-- JS inserts hostname --></p>
+                    </div>
+                    <div class="tile is-child box">
+                        <p class="title">Uptime</p>
+                        <p id="uptime"><!-- JS inserts uptime --></p>
+                    </div>
+                </div>
+                
+                <div class="tile is-parent">
+                    <div class="tile is-child box">
+                        <p class="title">Introduction</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam semper diam at erat pulvinar, at pulvinar felis blandit. Vestibulum volutpat tellus diam, consequat gravida libero rhoncus ut. Morbi maximus, leo sit amet vehicula eleifend, nunc dui porta orci, quis semper odio felis ut quam.</p>
+                        <p>Suspendisse varius ligula in molestie lacinia. Maecenas varius eget ligula a sagittis. Pellentesque interdum, nisl nec interdum maximus, augue diam porttitor lorem, et sollicitudin felis neque sit amet erat. Maecenas imperdiet felis nisi, fringilla luctus felis hendrerit sit amet. Aenean vitae gravida diam, finibus dignissim turpis. Sed eget varius ligula, at volutpat tortor.</p>
+                        <p>Integer sollicitudin, tortor a mattis commodo, velit urna rhoncus erat, vitae congue lectus dolor consequat libero. Donec leo ligula, maximus et pellentesque sed, gravida a metus. Cras ullamcorper a nunc ac porta. Aliquam ut aliquet lacus, quis faucibus libero. Quisque non semper leo.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="subtitle is-3">WiFi Select</h3>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Order</th>
+                        <th>SSID</th>
+                        <th>Controls</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>2WIRE807</td>
+                        <td>
+                            <div class="buttons are-small">
+                                <button class="button is-light is-primary">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-angle-up"></i>
+                                    </span>
+                                </button>
+                                <button class="button is-light is-primary">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-angle-down"></i>
+                                    </span>
+                                </button>
+                                <button class="button is-light is-danger">
+                                    <span>Remove</span>
+                                    <span class="icon is-small">
+                                        <i class="fas fa-times"></i>
+                                    </span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3 class="subtitle is-3">Execute</h3>
+            
+            
+            
+            <h3 class="subtitle is-3">Power</h3>
+            <button class="button is-danger">
+                <span>Reboot</span>
+                <span class="icon is-small">
+                    <i class="fas fa-redo"></i>
+                </span>
+            </button>
+            
+            <button class="button is-danger">
+                <span>Shut Down</span>
+                <span class="icon is-small">
+                    <i class="fas fa-power-off"></i>
+                </span>
+            </button>
+        </div>
+        
+        <footer class="footer">
+            <div class="content has-text-centered">
+                <p>
+                    <strong>Warp</strong>, built by the Enviro Tech Club. Copyright &copy; Warp contributors, 2021. Licensed under the
+                    <a href="http://opensource.org/licenses/mit-license.php">MIT</a> license.
+                </p>
+            </div>
+        </footer>
     </body>
 </html>

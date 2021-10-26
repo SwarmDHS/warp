@@ -16,13 +16,12 @@ RUN apt-get update && \
     wget \
     xz-utils
 
-RUN mkdir /build
-COPY . /build
+COPY . /warp
 
-ENV PATH="/build:${PATH}"
+ENV PATH="/warp:${PATH}"
 ENV PIMOD_CACHE=".cache"
 
-WORKDIR /build
+WORKDIR /warp
 
 # Start injecting our code, dependencies, and libraries
 # Pimod mounts both the boot and ext4 partitions, uses chroot
