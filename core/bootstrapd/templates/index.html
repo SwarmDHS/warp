@@ -30,26 +30,32 @@
                 <div class="tile is-4 is-vertical is-parent">
                     <div class="tile is-child box">
                         <p class="title">Hostname</p>
-                        <p id="hostname"><!-- JS inserts hostname --></p>
+                        <p class="title is-5" id="hostname">{{ hostname }}</p>
                     </div>
                     <div class="tile is-child box">
                         <p class="title">Uptime</p>
-                        <p id="uptime"><!-- JS inserts uptime --></p>
+                        <p class="title is-5" id="uptime">{{ uptime }}</p>
                     </div>
                 </div>
                 
                 <div class="tile is-parent">
                     <div class="tile is-child box">
                         <p class="title">Introduction</p>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam semper diam at erat pulvinar, at pulvinar felis blandit. Vestibulum volutpat tellus diam, consequat gravida libero rhoncus ut. Morbi maximus, leo sit amet vehicula eleifend, nunc dui porta orci, quis semper odio felis ut quam.</p>
-                        <p>Suspendisse varius ligula in molestie lacinia. Maecenas varius eget ligula a sagittis. Pellentesque interdum, nisl nec interdum maximus, augue diam porttitor lorem, et sollicitudin felis neque sit amet erat. Maecenas imperdiet felis nisi, fringilla luctus felis hendrerit sit amet. Aenean vitae gravida diam, finibus dignissim turpis. Sed eget varius ligula, at volutpat tortor.</p>
-                        <p>Integer sollicitudin, tortor a mattis commodo, velit urna rhoncus erat, vitae congue lectus dolor consequat libero. Donec leo ligula, maximus et pellentesque sed, gravida a metus. Cras ullamcorper a nunc ac porta. Aliquam ut aliquet lacus, quis faucibus libero. Quisque non semper leo.</p>
+                        <p>This is the control panel for initial setup of the Swarm Robotics Raspberry Pis. Here, you can access basic commands like WiFi configuration and power. Or, you can dircetly ssh into the pi using the default raspbian credentials and start poking around.</p>
+                        <br>
+                        <p>To connect the Raspberry Pi to a WiFi network, first add it to the table if you don't already see it. Optionally, move it to the top of the list. The Pi attempts to connect to each WiFi network in that specific order, so if you have multiple WiFi networks, you can prioritize one over the other by moving one higher up on the list. Finally, reboot and your Pi will connect to your WiFi network when it starts back up.</p>
                     </div>
                 </div>
             </div>
             
+            <hr>
+            
             <h3 class="subtitle is-3">WiFi Select</h3>
             
+            <form action="/" method="post">
+                <button class="button mb-4 is-light is-primary" id="wifi_enabled" name="wifi_enabled" value="wifi_enabled" onclick="if {{ wifi_enabled }} == 'disabled' document.getElementById('wifi_enabled').classList.toggle('is-danger')">WiFi is {{ wifi_enabled }}</button>
+            </form>
+
             <table class="table">
                 <thead>
                     <tr>
@@ -59,38 +65,57 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for network in networks %}
                     <tr>
-                        <td>1</td>
-                        <td>2WIRE807</td>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ network }}</td>
                         <td>
                             <div class="buttons are-small">
-                                <button class="button is-light is-primary">
-                                    <span class="icon is-small">
-                                        <i class="fas fa-angle-up"></i>
-                                    </span>
-                                </button>
-                                <button class="button is-light is-primary">
-                                    <span class="icon is-small">
-                                        <i class="fas fa-angle-down"></i>
-                                    </span>
-                                </button>
-                                <button class="button is-light is-danger">
-                                    <span>Remove</span>
-                                    <span class="icon is-small">
-                                        <i class="fas fa-times"></i>
-                                    </span>
-                                </button>
+                                <form action="/" method="post">
+                                    <button class="button is-light is-primary" name="network_table" value="up_{{ network }}">
+                                        <span class="icon is-small">
+                                            <i class="fas fa-angle-up"></i>
+                                        </span>
+                                    </button>
+                                    <button class="button is-light is-primary" name="network_table" value="down_{{ network }}">
+                                        <span class="icon is-small">
+                                            <i class="fas fa-angle-down"></i>
+                                        </span>
+                                    </button>
+                                    <button class="button is-light is-danger" name="network_table" value="remove_{{ network }}">
+                                        <span>Remove</span>
+                                        <span class="icon is-small">
+                                            <i class="fas fa-times"></i>
+                                        </span>
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>
+                    {% endfor %}
                 </tbody>
             </table>
             
-            <h3 class="subtitle is-3">Execute</h3>
+            <div class="field is-grouped">
+                <p class="control">
+                    <input class="input" type="text" placeholder="Network Name">
+                </p>
+                
+                <p class="control">
+                    <input class="input" type="text" placeholder="Passphrase">
+                </p>
+                
+                <p class="control">
+                    <a class="button is-primary is-light">
+                        Add
+                    </a>
+                </p>
+            </div>
             
-            
+            <hr>
             
             <h3 class="subtitle is-3">Power</h3>
+            
             <button class="button is-danger">
                 <span>Reboot</span>
                 <span class="icon is-small">

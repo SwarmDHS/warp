@@ -26,7 +26,7 @@ def config_toggle() -> bool:
             src = path + ".orig"
             dest = path
             
-        status: int = os.system(f"sudo mv {src} {dest}")
+        status: int = os.system(f"mv {src} {dest}")
         
         if status > 0:
             return False

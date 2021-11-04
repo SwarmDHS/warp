@@ -1,49 +1,63 @@
-import json, re
+import json, re, os
 import flask
-import command, network
+from flask import Flask, request
+import command, network, config
 
 app = flask.Flask(__name__)
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def render():
-    return flask.render_template("index.html")
+    hostname: str = get_hostname()
+    uptime: str = get_uptime()
+    ssids: list = network.get_ssids()
+    toggled: bool = config.is_config_active()    
 
-@app.route("/network", defaults={"ssid": None})
-@app.route("/network/<ssid>", methods=["POST", "DELETE"])
-@app.route("/network/<ssid>/up", methods=["POST"])
-@app.route("/network/<ssid>/down", methods=["POST"])
-def net(ssid: str):
-    current_route: str = flask.request.path.split("/")
-
-    networks: list = network.get_config().get("networks")
+    if flask.request.method == "POST":
+        if request.form.get("network_table"):
+            # Should look something like `up_SSID`
+            network_table: str = request.form.get("network_table").split("_")
+            action: str = network_table[0]
+            ssid: str = network_table[1]
+            
+            if action == "up":
+                network.move_item(ssid, 1)
+            elif action == "down":
+                network.move_item(ssid, 1)
+            elif action == "remove":
+                network.remove_item(ssid)
+        elif request.form.get("wifi_enabled"):
+            successful = config.config_toggle()
+            
+            if successful:
+                toggled = successful
+            
+    wifi_enabled: str = "enabled" if toggled else "disabled"
     
-    if ssid:
-        if "up" in current_route:
-            network.move_item(ssid, -1)
-        elif "down" in current_route:
-            network.move_item(ssid, 1)
-    
-    return json.dumps([network.get("ssid") for network in networks])
+    return flask.render_template(
+        "index.html",
+        hostname=hostname,
+        uptime=uptime,
+        networks=ssids,
+        wifi_enabled=wifi_enabled
+    )
 
 @app.route("/execute/<command>", methods=["POST"])
 def execute(command):
     pass
 
-@app.route("/time")
-def time():
-    return json.dumps({"time": command.run("date")})
+def get_time():
+    return command.run("date")
     
-@app.route("/uptime")
-def uptime():
-    return json.dumps({"uptime": re.findall(command.run("uptime"), r"[^\n]{2}")})
+def get_uptime():
+    # TODO: Use regex instead of this monstrosity
+    return " ".join(command.run("uptime").split(",")[0].split(" ")[2::])
 
-@app.route("/hostname")
-def hostname():
-    return json.dumps({"hostname": command.run("hostname")})
-    
+def get_hostname():
+    return command.run("hostname")
+
 # We need to control when this starts programmatically
 def start():
-    app.run(host="0.0.0.0", port=8000, debug=True)
-    
+    app.run(host="0.0.0.0", port=8080, debug=True)
+
 if __name__ == "__main__":
     start()

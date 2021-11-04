@@ -65,6 +65,9 @@ def write():
 def get_config() -> dict:
     parse()
     return network_config
+    
+def get_ssids() -> list:
+    return [cur_network.get("ssid") for cur_network in get_config().get("networks")]
 
 def move_item(ssid: str, direction: int) -> bool:
     networks = network_config.get("networks")
@@ -95,6 +98,8 @@ def add_item(ssid: str, psk: str):
     write()
     
 def remove_item(ssid):
-    network_config["networks"].remove(ssid)
+    networks = network_config.get("networks")
+    item = next((item for item in networks if item["ssid"] == ssid), None)
     
+    network_config["networks"].remove(item)
     write()
