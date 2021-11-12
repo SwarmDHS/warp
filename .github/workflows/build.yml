@@ -1,0 +1,19 @@
+name: Build OS Image
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Clone
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Build
+      run: COMPRESS=1 ./build.sh
+    - name: Deploy
+      uses: actions/upload-artifact@v2
+      with:
+        name: Warp
+        path: path/**

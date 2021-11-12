@@ -9,6 +9,7 @@ IMAGE_NAME=${IMAGE_NAME:-pimod_warp}
 PRESERVE_CONTAINER=${PRESERVE_CONTAINER:-0}
 CONTINUE=${CONTINUE:-0}
 CLEAN=${CLEAN:-0}
+COMPRESS=${COMPRESS:-0}
 
 CONTAINER_EXISTS=$(${DOCKER} ps -a --filter name="${CONTAINER_NAME}" -q)
 CONTAINER_RUNNING=$(${DOCKER} ps --filter name="${CONTAINER_NAME}" -q)
@@ -56,11 +57,14 @@ else
         -v $PWD:/build ${IMAGE_NAME}
 fi
 
-# Run the container
-
-
 if [[ "${PRESERVE_CONTAINER}" == "0" ]]; then
     ${DOCKER} rm -v "${CONTAINER_NAME}"
+fi
+
+if [[ "${COMPRESS}" == "1" ]]; then
+    cd deploy
+    tar -xzvf `basename .* .img`.tar.gz
+    cd -
 fi
 
 printf "\n\nDone! If nothing went wrong, your image should be ready\n"
