@@ -14,7 +14,8 @@ RUN apt-get update && \
     unzip \
     p7zip-full \
     wget \
-    xz-utils
+    xz-utils \
+    units
 
 RUN mkdir /build
 COPY . /build
